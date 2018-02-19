@@ -1,135 +1,117 @@
-﻿<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>全民K歌歌曲下载</title>
-    <link href="favicon.ico" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" /> 
-    <link href="favicon.ico" mce_href="favicon.ico" rel="icon" type="image/x-icon" /> 
-    <link href="favicon.ico" mce_href="favicon.ico" rel="shortcut icon" type="image/x-icon" /> 
-    <script src="./jquery.min.js?=2.1.4"></script> 
-    <script src="./jsUrlHelper.js"></script>
-    <script>
-      var num=0;
-      function MusicJsonCallback (data) {
-        for(i=0;i<data.data.ugclist.length; i++){
-          var url ="http://node.kg.qq.com/cgi/fcgi-bin/fcg_get_play_url?shareid=" + data.data.ugclist[i].shareid;
-          var p = document.createElement('p');//创建p节点
-          p.innerHTML = (num+1)+": "+data.data.ugclist[i].title;//p节点显示的文字
-          var audio = document.createElement('audio'); //生成一个audio元素 
-          audio.controls = true; //这样控件才能显示出来 
-          audio.src = url; //音乐的路径 
-          audio.preload = "none";
-          document.body.appendChild(p); //把p添加到页面中
-          document.body.appendChild(audio); //把audio添加到页面中
-          
-          num++;
-        }
-      }
-              
-      var more_flag=1;
-      var index=1;
-      var fun = function() {
-        if (more_flag==1) {
-          var src = "http://node.kg.qq.com/cgi/fcgi-bin/kg_ugc_get_homepage?type=get_ugc&start="+index+"&num=8&share_uid="+userId;
-          $.ajax({
-                type: "GET",
-                url: src,
-                dataType: "jsonp",  //指定服务器返回的数据类型
-                            jsonpCallback: "MusicJsonCallback",  //指定回调函数名称
-              }).done(function(data) {
-                more_flag=data.data.has_more;
-                index++;
-                fun();
-              }).fail(function() {
-                console.log("error");
-              })
-        } else {
-          console.log(num);
-        }
-      }
-      
-      var userId;
-      var myfunction = function(){
-        urlUid=document.getElementById("homePage").value;
-        userId=jsUrlHelper.getUrlParam(urlUid,"uid");
-        fun();
-      }
-      
-      document.onkeydown = function (e) {
-        var theEvent = window.event || e;
-        var code = theEvent.keyCode || theEvent.which;
-        if (code == 13) {
-          $("#btn").click();
-        }
-      }
-    </script>
-    <style>
+ <head> 
+  <meta charset="utf-8" /> 
+  <title>全民K歌歌曲下载</title> 
+  <link href="favicon.ico" mce_href="favicon.ico" rel="bookmark" type="image/x-icon" /> 
+  <link href="favicon.ico" mce_href="favicon.ico" rel="icon" type="image/x-icon" /> 
+  <link href="favicon.ico" mce_href="favicon.ico" rel="shortcut icon" type="image/x-icon" /> 
+  <style>
     * {
-    	box-sizing:border-box;
+      box-sizing:border-box;
     }
     body {
-    	margin:0;
-    	padding:0;
-    	font-weight:500;
-    	font-family:"Microsoft YaHei","宋体","Segoe UI","Lucida Grande",Helvetica,Arial,sans-serif,FreeSans,Arimo;
+      margin:0;
+      padding:0;
+      font-weight:500;
+      font-family:"Microsoft YaHei","宋体","Segoe UI","Lucida Grande",Helvetica,Arial,sans-serif,FreeSans,Arimo;
     }
 
-    div.search {
-    	padding:10px 0;
-    }
-    form {
-    	position:relative;
-    	width:300px;
-    	margin:0 auto;
-    }
     input, button {
-    	border:none;
-    	outline:none;
+      border:none;
+      outline:none;
     }
     input {
-    	width:100%;
-    	height:42px;
-    	padding-left:13px;
+      width:100%;
+      height:42px;
+      padding-left:13px;
     }
     button {
-    	height:42px;
-    	width:42px;
-    	cursor:pointer;
-    	position:absolute;
+      height:42px;
+      width:60px;
+      cursor:pointer;
+      position:absolute;
     }
       
-    .bar6 input {
-    	border:2px solid #c5464a;
-    	border-radius:5px;
-    	background:transparent;
-    	top:0;
-    	right:0;
+    input {
+      border:2px solid #c5464a;
+      border-radius:5px;
+      background:transparent;
+      top:0;
+      right:0;
     }
-    .bar6 button {
-    	background:#c5464a;
-    	border-radius:0 5px 5px 0;
-    	width:60px;
-    	top:0;
-    	right:0;
+    button {
+      background:#c5464a;
+      border-radius:0 5px 5px 0;
+      top:0;
+      right:0;
     }
-    .bar6 button:before {
-    	content:"搜索";
-    	font-size:13px;
-    	color:#F9F0DA;
+    button:before {
+      content:"搜索";
+      font-size:13px;
+      color:#F9F0DA;
     }
-    </style>
-  </head>
-  <body>
-    <!-- <input id="homePage" type="text" placeholder="全民k歌主页地址" autofocus="autofocus">
-    <input type="button" id="btn" value="搜索" onclick="myfunction()" />   -->
-    <div id="container">
-      <div class="search bar6">
-          <form>
-              <input id="homePage" type="text" placeholder="全民k歌主页地址" autofocus="autofocus">
-              <button id="btn" onclick="myfunction()"></button>
-          </form>
-      </div>
-    </div>
- 
-  </body>
+  </style>
+  <script src="./jquery.min.js?=2.1.4"></script> 
+  <script src="./jsUrlHelper.js"></script> 
+  <script>
+  	var num=0;
+  	function MusicJsonCallback (data) {
+  		for(i=0;i<data.data.ugclist.length; i++){
+  			var url ="http://node.kg.qq.com/cgi/fcgi-bin/fcg_get_play_url?shareid=" + data.data.ugclist[i].shareid;
+  			var p = document.createElement('p');//创建p节点
+  			p.innerHTML = (num+1)+": "+data.data.ugclist[i].title;//p节点显示的文字
+  			var audio = document.createElement('audio'); //生成一个audio元素 
+  			audio.controls = true; //这样控件才能显示出来 
+  			audio.src = url; //音乐的路径 
+  			audio.preload = "none";
+  			document.body.appendChild(p); //把p添加到页面中
+  			document.body.appendChild(audio); //把audio添加到页面中
+  			
+  			num++;
+  		}
+    }
+  					
+  	var more_flag=1;
+  	var index=1;
+  	var fun = function() {
+  		if (more_flag==1) {
+  			var src = "http://node.kg.qq.com/cgi/fcgi-bin/kg_ugc_get_homepage?type=get_ugc&start="+index+"&num=8&share_uid="+userId;
+  			$.ajax({
+  						type: "GET",
+  						url: src,
+  						dataType: "jsonp",  //指定服务器返回的数据类型
+                          jsonpCallback: "MusicJsonCallback",  //指定回调函数名称
+  					}).done(function(data) {
+  						more_flag=data.data.has_more;
+  						index++;
+  						fun();
+  					}).fail(function() {
+  						console.log("error");
+  					})
+  		} else {
+  			console.log(num);
+  		}
+  	}
+  	
+  	var userId;
+  	var myfunction = function(){
+  		urlUid=document.getElementById("homePage").value;
+  		userId=jsUrlHelper.getUrlParam(urlUid,"uid");
+  		fun();
+  	}
+  	
+  	document.onkeydown = function (e) {
+  		var theEvent = window.event || e;
+  		var code = theEvent.keyCode || theEvent.which;
+  		if (code == 13) {
+  			$("#btn").click();
+  		}
+  	}
+  </script> 
+ </head> 
+ <body>
+  <input type="text" id="homePage" placeholder="输入网址" autofocus="autofocus" /> 
+  <button id="btn" onclick="myfunction()"></button>
+ </body>
 </html>
